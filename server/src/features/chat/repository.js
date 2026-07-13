@@ -37,7 +37,7 @@ module.exports = function createChatRepository({ pool }) {
         `;
 
        try {
-            const { rows } = await pool.query(query);
+            const { rows } = await pool.query(query, [conversationId]);
             return rows;
         }
         catch (err) {
@@ -48,6 +48,6 @@ module.exports = function createChatRepository({ pool }) {
 
     return {
         create,
-        getAll,
+        getMessages,
     };
 };
