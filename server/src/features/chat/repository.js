@@ -1,16 +1,16 @@
 
 module.exports = function createChatRepository({ pool }) {
 
-    async function create({ userId, content }) {
+    async function create({ conversationId, senderId, content }) {
 
         const query = `
-            INSERT INTO messages(user_id, content)
-            VALUES($1, $2)
+            INSERT INTO messages(conversation_id, sender_id, content)
+            VALUES($1, $2, $3)
             RETURNING *
         `;
 
        try {
-            const { rows } = await pool.query(query, [userId, content]);
+            const { rows } = await pool.query(query, [conversationId, senderId, content]);
             return rows[0];
         }
         catch (err) {
@@ -20,17 +20,19 @@ module.exports = function createChatRepository({ pool }) {
 
     }
 
-    async function getAll() {
+    async function getMessages(conversationId) {
 
         const query = `
             SELECT
                 m.id,
                 u.username,
+                u.id AS sender_id,
                 m.content,
                 m.created_at
             FROM messages m
             JOIN users u
-                ON u.id = m.user_id
+                ON u.id = m.sender_id
+            WHERE m.conversation_id = $1
             ORDER BY m.created_at ASC
         `;
 
