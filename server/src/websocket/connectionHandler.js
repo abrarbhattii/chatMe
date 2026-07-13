@@ -6,7 +6,7 @@ module.exports = function createConnectionHandler({ messageRouter, }) {
         socket.on("message", async buffer => {
             try {
                 const message = JSON.parse(buffer.toString());
-                await messageRouter(socket, {userId: 2, content: message, type: "chat_message"});
+                await messageRouter(socket, { conversationId: 1, senderId: 3, content: message, type: "chat_message"});
             } catch (err) {
                 socket.send(JSON.stringify({
                     type: "error",

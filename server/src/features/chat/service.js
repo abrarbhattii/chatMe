@@ -8,7 +8,7 @@ module.exports = function createChatService({ chatRepository, }) {
             throw new ValidationError("Invalid conversation.");
         }
 
-        if (!Number.isInteger(userId)) {
+        if (!Number.isInteger(senderId)) {
             throw new ValidationError("Invalid senderId.");
         }
 

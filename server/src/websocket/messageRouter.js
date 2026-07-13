@@ -7,7 +7,7 @@ module.exports = function createMessageRouter({ WS_handlers, }) {
             throw new Error(`Unsupported message: ${message.type}`);
         }
 
-        await handler(socket, { userId: message.userId, content: message.content });
+        await handler(socket, { conversationId: message.conversationId, senderId: message.senderId, content: message.content });
     };
 
 };
