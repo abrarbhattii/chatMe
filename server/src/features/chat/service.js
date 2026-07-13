@@ -2,10 +2,14 @@ const ValidationError = require("../../shared/errors/ValidationError");
 
 module.exports = function createChatService({ chatRepository, }) {
 
-    async function sendMessage({ userId, content, }) {
+    async function sendMessage({ conversationId, senderId, content }) {
+
+        if (!Number.isInteger(conversationId)) {
+            throw new ValidationError("Invalid conversation.");
+        }
 
         if (!Number.isInteger(userId)) {
-            throw new ValidationError("Invalid userId.");
+            throw new ValidationError("Invalid senderId.");
         }
 
         if (!content?.trim()) {
@@ -16,11 +20,11 @@ module.exports = function createChatService({ chatRepository, }) {
             throw new ValidationError("Message exceeds 1000 characters.");
         }
 
-        return chatRepository.create({ userId, content: content.trim(), });
+        return chatRepository.create({ conversationId, senderId, content: content.trim(), });
     }
 
-    async function getMessages() {
-        return chatRepository.getAll();
+    async function getMessages(conversationId) {
+        return chatRepository.getMessages(conversationId);
     }
 
     return {
