@@ -42,7 +42,7 @@ module.exports = function createApplication() {
     
     app.use("/api/v1/health", healthRoutes);
 
-    app.use("/api/v1/messages", chat.httpRoutes);
+    app.use("/api/v1", chat.httpRoutes);
 
     app.use(errorHandler);
 
