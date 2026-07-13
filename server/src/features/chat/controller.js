@@ -2,7 +2,8 @@ module.exports = function createChatController({ chatService, }) {
 
     async function getMessages(req, res, next) {
         try {
-            const messages = await chatService.getMessages();
+            const conversationId = Number(req.params.conversationId);
+            const messages = await chatService.getMessages(conversationId);
             res.json({
                 success: true,
                 data: messages,
@@ -14,9 +15,10 @@ module.exports = function createChatController({ chatService, }) {
 
     async function createMessage(req, res, next) {
         try {
+            const conversationId = Number(req.params.conversationId);
             console.log("req.body: ", req.body)
-            const { userId, content } = req.body;
-            const message = await chatService.sendMessage({ userId, content });
+            const { senderId, content } = req.body;
+            const message = await chatService.sendMessage({ conversationId, senderId, content });
             // const message = await chatService.sendMessage(req.body);
             res.status(201).json({
                 success: true,
