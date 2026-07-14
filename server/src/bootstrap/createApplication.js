@@ -76,6 +76,9 @@ module.exports = function createApplication() {
             await pool.end();
             return;
         }
+        for (const client of wss.clients) {
+            client.close();
+        }
         await new Promise((resolve, reject) => {
             server.close(err => {
                 if (err) return reject(err);
