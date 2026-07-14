@@ -1,8 +1,15 @@
 const ValidationError = require("../../shared/errors/ValidationError");
+const NotFoundError = require("../../shared/errors/NotFoundError");
 
 module.exports = function createChatService({ chatRepository, }) {
 
     async function sendMessage({ conversationId, senderId, content }) {
+
+        const exists = await chatRepository.exists(conversationId);
+
+        if (!exists) {
+            throw new NotFoundError("Conversation not found.");
+        }
 
         if (!Number.isInteger(conversationId)) {
             throw new ValidationError("Invalid conversation.");
@@ -24,6 +31,12 @@ module.exports = function createChatService({ chatRepository, }) {
     }
 
     async function getMessages(conversationId) {
+        const exists = await chatRepository.exists(conversationId);
+
+        if (!exists) {
+            throw new NotFoundError("Conversation not found.");
+        }
+
         return chatRepository.getMessages(conversationId);
     }
 

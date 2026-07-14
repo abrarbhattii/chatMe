@@ -32,11 +32,14 @@ DROP TABLE IF EXISTS conversation_members;
 DROP TABLE IF EXISTS conversations;
 DROP TABLE IF EXISTS users;
 
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
+	password VARCHAR(50) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
 
 CREATE TABLE conversations (
     id SERIAL PRIMARY KEY,
@@ -46,6 +49,7 @@ CREATE TABLE conversations (
 
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
 
 CREATE TABLE conversation_members (
 
@@ -61,6 +65,7 @@ CREATE TABLE conversation_members (
 
     PRIMARY KEY (conversation_id, user_id)
 );
+
 
 CREATE TABLE messages (
 
@@ -79,6 +84,7 @@ CREATE TABLE messages (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+
 CREATE INDEX idx_messages_conversation
 ON messages(conversation_id);
 
@@ -90,35 +96,3 @@ ON messages(created_at);
 
 CREATE INDEX idx_members_user
 ON conversation_members(user_id);
-
-
-
-INSERT INTO users (username)
-VALUES
-('Alice'),
-('Bob'),
-('Charlie');
-
-INSERT INTO conversations(type)
-VALUES
-('DIRECT');
-
-INSERT INTO conversation_members
-(conversation_id, user_id)
-VALUES
-(1,3),
-(1,4);
-
-INSERT INTO messages
-(conversation_id, sender_id, content)
-VALUES
-(1,1,'Hello Bob'),
-(1,2,'Hello Alice');
-
-
-
-
-
-
-
-

@@ -60,19 +60,26 @@ module.exports = function createApplication() {
         console.log("Connected to PostgreSQL.");
     }
 
+    let started = false;
     async function startHttpServer() {
         return new Promise((resolve) => {
             server.listen(env.app.port, () => {
                 console.log(`Server is listening on port: ${env.app.port}`);
+                started = true;
                 resolve();
             });
         });
     }
 
     async function stopHttpServer() {
+        if (!started) {
+            await pool.end();
+            return;
+        }
         await new Promise((resolve, reject) => {
             server.close(err => {
                 if (err) return reject(err);
+                started = false;
                 resolve();
             });
         });
@@ -89,8 +96,10 @@ module.exports = function createApplication() {
     }
 
     return {
+        app,
         start,
         stop,
+        pool,
     };
 
 }

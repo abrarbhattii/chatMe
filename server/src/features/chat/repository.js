@@ -1,6 +1,22 @@
 
 module.exports = function createChatRepository({ pool }) {
 
+    async function exists(conversationId) {
+
+        const query = `
+            SELECT EXISTS(
+                SELECT 1
+                FROM conversations
+                WHERE id = $1
+            ) AS exists
+        `;
+
+        const { rows } = await pool.query(query, [conversationId]);
+
+        return rows[0].exists;
+
+    }
+
     async function create({ conversationId, senderId, content }) {
 
         const query = `
@@ -47,6 +63,7 @@ module.exports = function createChatRepository({ pool }) {
     }
 
     return {
+        exists,
         create,
         getMessages,
     };
