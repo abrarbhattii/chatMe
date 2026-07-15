@@ -47,6 +47,8 @@ CREATE TABLE conversations (
     type VARCHAR(20) NOT NULL
         CHECK (type IN ('DIRECT', 'GROUP')),
 
+    name VARCHAR(100),
+
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 

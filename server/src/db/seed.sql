@@ -20,5 +20,5 @@ VALUES
 INSERT INTO messages
 (conversation_id, sender_id, content)
 VALUES
-(1,1,'Hello Bob'),
-(1,2,'Hello Alice');
+(1,3,'Hello Bob'),
+(1,4,'Hello Alice');

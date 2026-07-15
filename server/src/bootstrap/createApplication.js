@@ -8,6 +8,7 @@ const { WebSocketServer } = require("ws");
 const createDatabasePool = require("../config/database");
 const createChatGateway = require("../gateways/chatGateway");
 
+const createConversationModule = require("../features/conversations");
 const createChatModule = require("../features/chat");
 
 const createMessageRouter = require("../websocket/messageRouter");
@@ -38,7 +39,11 @@ module.exports = function createApplication() {
 
     const chatGateway = createChatGateway({ wss, });
 
+    const conversations = createConversationModule({ pool, });
+
     const chat = createChatModule({ pool, chatGateway, });
+
+    app.use("/api/v1/conversations", conversations.httpRoutes);
     
     app.use("/api/v1/health", healthRoutes);
 

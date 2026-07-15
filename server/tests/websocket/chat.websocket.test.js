@@ -33,7 +33,7 @@ describe("WebSocket Connection", () => {
 
     test("Send Message", async () => {
         const socket = await connect(ws_url);
-        socket.send(JSON.stringify("Hello WS"));
+        socket.send(JSON.stringify( {conversationId : 1, senderId: 3, content: "Hello WS"}));  //{conversationId, senderId, content}
         const message = await waitForMessage(socket);
         expect(message.type).toBe("chat_message");
         expect(message.payload.conversation_id).toBe(1);
@@ -44,11 +44,11 @@ describe("WebSocket Connection", () => {
     test("Broadcast", async () => {
         const sender = await connect(ws_url);
         const receiver = await connect(ws_url);
-        sender.send(JSON.stringify("hello reciever"));
+        sender.send(JSON.stringify({conversationId : 1, senderId: 3, content: "Hello reciever"}));
         const message = await waitForMessage(receiver);
         expect(message.type).toBe("chat_message");
         expect(message.payload.conversation_id).toBe(1);
-        expect(message.payload.content).toBe("hello reciever");
+        expect(message.payload.content).toBe("Hello reciever");
         await disconnect(sender);
         await disconnect(receiver);
     });
