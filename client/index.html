@@ -8,17 +8,31 @@
 <body>
 
     <h1>ChatMe</h1>
+
+    <p>Create New or Get existing conversation</p>
+    <p>Creator ID</p>
+    <input class="inptxt-Creator" type="text">
+    <p>Participant ID</p>
+    <input class="inptxt-Participant" type="text">
+    <br>
+    <br>
+    <button class="get-convo-btn">Get Conversation</button>
+    <br>
+    <br>
+    <textarea name="txtarea" id="txtA1" style="height: 50px;"></textarea>
+
+
+
     <p>Upgrade to</p>
     <button class="ws-btn">Websocket</button>
     <button class="tcp-btn">TCP</button>
-    <p>Type something to send a message</p>
-    <input class="inptxt" type="text">
-    <br>
-    <br>
+
+    <p>Type message to send to the selected user</p>
+    <input class="inptxt-message" type="text">
     <button class="sendBtn">Send</button>
     <br>
     <p>Reply</p>
-    <textarea name="txtarea" id="txtA1" style="height: 50px;"></textarea>
+    <textarea name="txtarea" id="txtA2" style="height: 50px;"></textarea>
 
 
     <script src="./js/index.js"></script>

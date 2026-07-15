@@ -1,20 +1,76 @@
+let conversationId = null;
+let senderId = null;
+let conversation = {};
+document.querySelector(".get-convo-btn").addEventListener("click", (e)=>{
+    const creatorInp = document.querySelector(".inptxt-Creator");
+    const participantInp = document.querySelector(".inptxt-Participant");
+    const body = { creatorId: Number(creatorInp.value), participantId: Number(participantInp.value)}
+    console.log("verifying user:", JSON.stringify(body));
+    // Use fetch API as TCP fallback
+    fetch('http://localhost:3003/api/v1/conversations/direct', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.querySelector("#txtA1").value = `Conversation ID: ${JSON.parse(data).data.id}`;
+        console.log("data: ", JSON.parse(data), JSON.parse(data).data.id);
+        conversation = JSON.parse(data).data;
+        conversationId = JSON.parse(data).data.id
+        senderId = Number(creatorInp.value);
+        console.log("senderId: ", senderId);
+        // creatorInp.value = "";
+        // participantInp.value = "";
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+
 
 document.querySelector(".ws-btn").addEventListener("click", (e)=>{
     const ws = new WebSocket("ws://localhost:3003");
-    let input;
     document.querySelector(".sendBtn").addEventListener("click", (e)=>{
-        input = document.querySelector(".inptxt");
-        console.log("Sending:", JSON.stringify(input.value));
-        ws.send(JSON.stringify(input.value));
+        const content = document.querySelector(".inptxt-message").value;
+        console.log("Sending:", JSON.stringify(content));
+        ws.send(JSON.stringify({ conversationId, senderId, content}));
     });
     ws.onopen = () => {
+        alert("websockt connnection succesfull...")
         console.log("Connected");
     };
     ws.onmessage = (event) => {
         console.log(event.data);
-        document.querySelector("#txtA1").value += event.data + "\n";   
+        document.querySelector("#txtA2").value += event.data + "\n";   
     };
 });
+
+
+document.querySelector(".tcp-btn").addEventListener("click", (e)=>{
+    alert("tcp connection succesfull...")
+    document.querySelector(".sendBtn").addEventListener("click", (e)=>{
+        const content = document.querySelector(".inptxt-message").value;
+        const body = { senderId, content };
+        console.log("Sending body:", JSON.stringify(body));
+        fetch(`http://127.0.0.1:3003/api/v1/conversations/${conversationId}/messages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body)
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.querySelector("#txtA2").value += data + "\n";   
+            console.log("data: ", data);
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+
+
 
 
 
