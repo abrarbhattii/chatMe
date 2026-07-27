@@ -1,3 +1,4 @@
+require("dotenv").config();
 module.exports = {
     app: {
         port: Number(process.env.PORT) || 3000,

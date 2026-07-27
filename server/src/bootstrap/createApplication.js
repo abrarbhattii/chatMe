@@ -5,7 +5,7 @@ const http = require("http");
 const { WebSocketServer } = require("ws");
 
 
-const createDatabasePool = require("../config/database");
+const createDatabasePool = require("../config/postgres");
 const createChatGateway = require("../gateways/chatGateway");
 
 const createConversationModule = require("../features/conversations");
