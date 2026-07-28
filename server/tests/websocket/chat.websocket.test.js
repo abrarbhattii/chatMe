@@ -1,6 +1,6 @@
 const WebSocket = require("ws");
 const application = require("../setup");
-const resetDatabase = require("../helpers/resetDatabase");
+const resetDatabase = require("../../src/db/helpers/resetDatabase");
 const { connect, waitForMessage, disconnect } = require("../helpers/websocketClient");
 const env = require("../../src/config/env");
 

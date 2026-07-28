@@ -1,9 +1,17 @@
 const request = require("supertest");
 const application = require("../setup");
-const resetDatabase = require("../helpers/resetDatabase");
+const resetDatabase = require("../../src/db/helpers/resetDatabase");
 
 beforeEach(async () => {
     await resetDatabase(application.pool);
+});
+
+beforeAll(async () => {
+    await application.start();
+});
+
+afterAll(async () => {
+    await application.stop();
 });
 
 describe("Chat API", () => {

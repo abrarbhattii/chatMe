@@ -9,7 +9,9 @@ module.exports = async function testSeed(pool) {
         VALUES
             ('Alice', '$1234'),
             ('Bob', '%1234'),
-            ('Charlie', '&1234');
+            ('Charlie', '&1234'),
+            ('admin', '@1234'), 
+            ('ab', '#1234');
     `);
 
     await pool.query(`
@@ -22,16 +24,16 @@ module.exports = async function testSeed(pool) {
         INSERT INTO conversation_members
             (conversation_id, user_id)
         VALUES
-            (1,1),
-            (1,2);
+            (1, 3),
+            (1, 4);
     `);
 
     await pool.query(`
         INSERT INTO messages
             (conversation_id, sender_id, content)
         VALUES
-            (1,1,'Hello Bob'),
-            (1,2,'Hello Alice');
+            (1, 3, 'Hello Bob'),
+            (1, 4, 'Hello Alice');
     `);
 
 };
