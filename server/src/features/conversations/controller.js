@@ -21,7 +21,7 @@ module.exports = function createConversationController({ conversationService, })
 
     async function createDirectConversation(req, res, next) {
         try {
-            const { creatorId, participantId } = req.body;
+            const { creatorId, participantId } = req.validated.body;
             
             const conversation =
                 await conversationService
