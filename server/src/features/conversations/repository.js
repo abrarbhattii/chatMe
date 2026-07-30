@@ -11,17 +11,31 @@ module.exports = function createConversationRepository({ pool, logger, }) {
                 u.id          AS participant_id,
                 u.username    AS participant_username,
                 (
+                    SELECT id
+                    FROM messages m
+                    WHERE m.conversation_id = c.id
+                    ORDER BY id DESC
+                    LIMIT 1
+                ) AS last_message_id,
+                (
+                    SELECT sender_id
+                    FROM messages m
+                    WHERE m.conversation_id = c.id
+                    ORDER BY id DESC
+                    LIMIT 1
+                ) AS last_message_sender,
+                (
                     SELECT content
                     FROM messages m
                     WHERE m.conversation_id = c.id
-                    ORDER BY created_at DESC
+                    ORDER BY id DESC
                     LIMIT 1
                 ) AS last_message,
                 (
                     SELECT created_at
                     FROM messages m
                     WHERE m.conversation_id = c.id
-                    ORDER BY created_at DESC
+                    ORDER BY id DESC
                     LIMIT 1
                 ) AS last_message_at
             FROM conversations c

@@ -10,9 +10,16 @@ module.exports = function createConversationService({ conversationRepository, lo
                     ? conversation.participant_username 
                         : conversation.name,
             createdAt: conversation.created_at,
+            participants: {
+                creatorId: userId, 
+                participantId: conversation.participant_id,
+                participantUsername: conversation.participant_username,
+            },
             lastMessage: {
-                content: conversation.last_message,
-                createdAt: conversation.last_message_at,
+                messageId: conversation.last_message_id,
+                messageSender: conversation.last_message_sender,
+                MessageContent: conversation.last_message,
+                createdAt: conversation.last_message_at,    
             },
         }));
     }

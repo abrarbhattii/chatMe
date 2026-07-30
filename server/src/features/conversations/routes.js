@@ -5,6 +5,7 @@ const createDirectConversationSchema = require("./schema/createDirectConversatio
 module.exports = function createRoutes({ conversationController, }) {
     const router = express.Router();
     router.get("/user/:userId", conversationController.getUserConversations);
+    router.get("/", conversationController.getUserConversations);
     // router.post("/direct", conversationController.createDirectConversation);
     router.post("/direct", validate(createDirectConversationSchema), conversationController.createDirectConversation);
     return router;

@@ -2,18 +2,23 @@ module.exports = function createConversationController({ conversationService, lo
 
     async function getUserConversations(req, res, next) {
         try {
-            const userId = Number(req.params.userId);
+            const userId = Number(req.params.userId || req.query.userId);
 
-            const conversations =
-                await conversationService
-                    .getUserConversations(userId);
+            if (!Number.isInteger(userId) || userId <= 0) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Invalid userId"
+                });
+            }
+
+            const conversations = await conversationService.getUserConversations(userId);
 
             res.json({
                 success: true,
                 data: conversations,
             });
         } catch (err) {
-            console.log(err)
+            logger.error({err}, "error: ")
             next(err);
         }
 
