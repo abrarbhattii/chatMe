@@ -1,4 +1,4 @@
-module.exports = function createConversationService({ conversationRepository, }) {
+module.exports = function createConversationService({ conversationRepository, logger, }) {
 
     async function getUserConversations(userId) {
         const conversations = await conversationRepository.findConversationsByUser(userId);
@@ -19,9 +19,17 @@ module.exports = function createConversationService({ conversationRepository, })
 
     async function createDirectConversation({ creatorId, participantId, }) {
         const existingConversation = await conversationRepository.findDirectConversation({ creatorId, participantId, })
-        if (existingConversation) 
+
+        if (existingConversation) {
+            logger.info({ conversationId: existingConversation.id, creatorId }, "Existing Conversation returned");
             return existingConversation;
-        return conversationRepository.createDirectConversation({ creatorId, participantId, });
+        } 
+
+        const conversation = await conversationRepository.createDirectConversation({ creatorId, participantId, });
+
+        logger.info({ conversationId: conversation.id, creatorId }, "Conversation created");
+
+        return conversation;
     }
 
     return {

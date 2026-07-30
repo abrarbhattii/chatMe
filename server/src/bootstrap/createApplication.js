@@ -17,9 +17,13 @@ const createConnectionHandler = require("../websocket/connectionHandler");
 
 const healthRoutes = require("../features/health/health.routes");
 
-const errorHandler = require("../middleware/errorHandler");
-
 const env = require("../config/env");
+
+const createLogger = require("../config/logger");
+const logger = createLogger();
+
+const createErrorHandler = require("../middleware/errorHandler");
+const errorHandler = createErrorHandler({ logger, });
 
 
 
@@ -29,7 +33,17 @@ module.exports = function createApplication() {
     
     app.use(cors());
     app.use(express.json());
-    app.use(morgan("dev"));
+    // app.use(morgan("dev"));
+
+    app.use(
+        morgan(":method :url :status :response-time ms - :res[content-length]", {
+            stream: {
+                write: (message) => {
+                    logger.info({ type: "http" }, message.trim());
+                },
+            },
+        })
+    );
 
     const server = http.createServer(app);
 
@@ -37,11 +51,11 @@ module.exports = function createApplication() {
 
     const pool = createDatabasePool();
 
-    const chatGateway = createChatGateway({ wss, });
+    const chatGateway = createChatGateway({ wss, logger, });
 
-    const conversations = createConversationModule({ pool, });
+    const conversations = createConversationModule({ pool, logger, });
 
-    const chat = createChatModule({ pool, chatGateway, });
+    const chat = createChatModule({ pool, chatGateway, logger, });
 
     app.use("/api/v1/conversations", conversations.httpRoutes);
     
@@ -53,23 +67,30 @@ module.exports = function createApplication() {
 
     const WS_handlers = { ...chat.websocketHandlers, };
 
-    const router = createMessageRouter({ WS_handlers, });
+    const router = createMessageRouter({ WS_handlers, logger, });
 
-    const connectionHandler = createConnectionHandler({ messageRouter: router, });
+    const connectionHandler = createConnectionHandler({ messageRouter: router, logger, });
 
     wss.on("connection", connectionHandler);
 
     
     async function verifyDatabase() {
-        await pool.query("SELECT NOW()");
-        console.log("Connected to PostgreSQL.");
+        try {
+            await pool.query("SELECT NOW()");
+            // console.log("Connected to PostgreSQL.");
+            logger.info("Connected to PostgreSQL.");
+        } catch (error) {
+            logger.error({ err, }, "Database connection failed");
+        } 
     }
 
     let started = false;
     async function startHttpServer() {
         return new Promise((resolve) => {
             server.listen(env.app.port, () => {
-                console.log(`Server is listening on port: ${env.app.port}`);
+                // console.log(`Server is listening on port: ${env.app.port}`);
+                logger.info(`Server is listening on port: ${env.app.port}`);
+                logger.info({ port: env.app.port, }, "HTTP server started");
                 started = true;
                 resolve();
             });
@@ -78,14 +99,14 @@ module.exports = function createApplication() {
 
     async function stopHttpServer() {
         if (!started) {
-            await pool.end();
+            await pool?.end();
             return;
         }
-        for (const client of wss.clients) {
-            client.close();
+        for (const client of wss?.clients) {
+            client?.close();
         }
         await new Promise((resolve, reject) => {
-            server.close(err => {
+            server?.close(err => {
                 if (err) return reject(err);
                 started = false;
                 resolve();
@@ -100,7 +121,7 @@ module.exports = function createApplication() {
 
     async function stop() {
         await stopHttpServer();
-        await pool.end();
+        await pool?.end();
     }
 
     return {

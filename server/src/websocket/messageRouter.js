@@ -1,13 +1,14 @@
-module.exports = function createMessageRouter({ WS_handlers, }) {
+module.exports = function createMessageRouter({ WS_handlers, logger, }) {
 
-    return async function route(socket, message) {
-        const handler = WS_handlers[message.type];
+    return async function route(socket, validatedMessageObject) {
+        const handler = WS_handlers[validatedMessageObject.type];
 
         if (!handler) {
-            throw new Error(`Unsupported message: ${message.type}`);
+            logger.warn({ type, }, "Unknown websocket message type");
+            throw new Error(`Unsupported message: ${validatedMessageObject.type}`);
         }
 
-        await handler(socket, message);
+        await handler(socket, validatedMessageObject);
     };
 
 };

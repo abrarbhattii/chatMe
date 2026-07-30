@@ -62,7 +62,7 @@ describe("WebSocket Connection", () => {
         }));
         const message = await waitForMessage(socket);
         expect(message.type).toEqual("error");
-   
+        await disconnect(socket);
     });
 
 });

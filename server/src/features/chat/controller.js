@@ -1,4 +1,4 @@
-module.exports = function createChatController({ chatService, }) {
+module.exports = function createChatController({ chatService, logger, }) {
 
     async function getMessages(req, res, next) {
         try {
@@ -16,10 +16,13 @@ module.exports = function createChatController({ chatService, }) {
     async function createMessage(req, res, next) {
         try {
             const { conversationId } = req.validated.params;
-            console.log("req.body: ", req.validated.body);
+            // console.log("req.validated.body: ", req.validated.body);
+            // logger.info({req: req.validated.body},`req.validated.body`);
             const { senderId, content } = req.validated.body;
             const message = await chatService.sendMessage({ conversationId, senderId, content });
             // const message = await chatService.sendMessage(req.body);
+            // logger.info({message}, `message:`);
+            // console.log("message: ", message);
             res.status(201).json({
                 success: true,
                 data: message,

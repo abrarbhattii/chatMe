@@ -1,5 +1,5 @@
 module.exports = async function truncateDatabase(pool) {
-    console.log("trucated dbs1: ")
+    // logger.info("trucated dbs1: ");
     await pool.query(`
         DO $$ 
         BEGIN
@@ -17,5 +17,5 @@ module.exports = async function truncateDatabase(pool) {
             END IF;
         END $$;
     `);
-    console.log("trucated dbs2: ")
+    // logger.info("trucated dbs2: ")
 };

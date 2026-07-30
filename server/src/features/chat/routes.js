@@ -1,6 +1,6 @@
 const express = require("express");
 const validate = require("../../middleware/validate");
-const createMessageSchema = require("./schema/createMessage");
+const createMessageSchema = require("./schema/createHttpMessage");
 
 module.exports = function createChatRoutes({ chatController, }) {
 

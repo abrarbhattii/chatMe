@@ -1,4 +1,4 @@
-module.exports = function createConversationController({ conversationService, }) {
+module.exports = function createConversationController({ conversationService, logger, }) {
 
     async function getUserConversations(req, res, next) {
         try {
@@ -26,6 +26,8 @@ module.exports = function createConversationController({ conversationService, })
             const conversation =
                 await conversationService
                     .createDirectConversation({ creatorId, participantId });
+            
+            logger.info({conversation}, "conversation");
 
             res.status(201).json({
                 success: true,

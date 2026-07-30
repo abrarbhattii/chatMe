@@ -1,4 +1,4 @@
-module.exports = function createConversationRepository({ pool }) {
+module.exports = function createConversationRepository({ pool, logger, }) {
 
     async function findConversationsByUser(userId) {
 
@@ -39,11 +39,13 @@ module.exports = function createConversationRepository({ pool }) {
         
         try {
             const { rows } = await pool.query(query, [userId]);
-            console.log("rows: ", rows)
+            // console.log("rows: ", rows)
+            // logger.info({rows}, "rows");
             return rows;
         }
         catch (err) {
-            console.error("Error Finding Conversations By UserID:", err);
+            // console.error("Error Finding Conversations By UserID:", err);
+            logger.error({err}, "Error Finding Conversations By UserID:");
             throw err;
         }
 
@@ -76,7 +78,8 @@ module.exports = function createConversationRepository({ pool }) {
             return rows[0] ?? null;
         }
         catch (err) {
-            console.error("Error Finding Direct Conversation:", err);
+            // console.error("Error Finding Direct Conversation:", err);
+            logger.error({ err }, "Failed to Find Direct conversation");
             throw err;
         }
         
@@ -121,7 +124,8 @@ module.exports = function createConversationRepository({ pool }) {
             };
 
         } catch (err) {
-            console.error("Error Creating Direct Conversation:", err);
+            // console.error("Error Creating Direct Conversation:", err);
+            logger.error({ err }, "Failed to create Direct conversation");
             await client.query("ROLLBACK");
             throw err;
         } finally {

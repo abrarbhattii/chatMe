@@ -1,5 +1,5 @@
 
-module.exports = function createChatRepository({ pool }) {
+module.exports = function createChatRepository({ pool, logger, }) {
 
     async function exists(conversationId) {
 
@@ -13,6 +13,8 @@ module.exports = function createChatRepository({ pool }) {
 
         const { rows } = await pool.query(query, [conversationId]);
 
+        // console.log("existing rows: ", rows);
+        // logger.info({existingRows}, `existing rows: `);
         return rows[0].exists;
 
     }
@@ -26,11 +28,14 @@ module.exports = function createChatRepository({ pool }) {
         `;
 
        try {
+            logger.debug({ conversationId, senderId, }, "Saving message");
             const { rows } = await pool.query(query, [conversationId, senderId, content]);
+            // logger.info({rows}, `rows: `);
             return rows[0];
         }
         catch (err) {
-            console.error("Error creating message:", err);
+            // console.error("Error creating message:", err);
+            logger.error({ err, conversationId, }, "Failed to insert message");
             throw err;
         }
 
