@@ -32,8 +32,8 @@ module.exports = async function testSeed(pool) {
         INSERT INTO messages
             (conversation_id, sender_id, content)
         VALUES
-            (1, 3, 'Hello Bob'),
-            (1, 4, 'Hello Alice');
+            (1, 3, 'Hello admin'),
+            (1, 4, 'Hello Charlie');
     `);
 
 };

@@ -1,5 +1,35 @@
 module.exports = function createConversationRepository({ pool, logger, }) {
 
+    async function findConversationById(conversationId) {
+        const query =`
+            SELECT
+                c.id,
+                c.type,
+                c.name,
+                json_agg(
+                    json_build_object(
+                        'id',u.id,
+                        'username',u.username
+                    )
+                ) AS participants
+            FROM conversations c
+            JOIN conversation_members cm ON cm.conversation_id=c.id
+            JOIN users u ON u.id=cm.user_id
+            WHERE c.id = $1
+            GROUP BY c.id
+        `;
+
+        try {
+            const { rows } = await pool.query(query, [conversationId]);
+            logger.info({ rows }, "rows");
+            return rows[0];
+        }
+        catch (err) {
+            logger.error({ err }, "Failed to Find conversation");
+            throw err;
+        }
+    }
+
     async function findConversationsByUser(userId) {
 
         const query = `
@@ -152,6 +182,7 @@ module.exports = function createConversationRepository({ pool, logger, }) {
         findDirectConversation,
         createDirectConversation,
         findConversationsByUser,
+        findConversationById,
     };
 
 };

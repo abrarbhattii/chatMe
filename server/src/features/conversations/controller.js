@@ -1,5 +1,19 @@
 module.exports = function createConversationController({ conversationService, logger, }) {
 
+    async function getConversation(req, res, next) {
+        try {
+            const conversationId = Number(req.params.conversationId);
+            const conversation = await conversationService.getConversation(conversationId);
+            res.json({
+                success: true,
+                data: conversation,
+            });
+        } catch (err) {
+            logger.error({err}, "error: ")
+            next(err);
+        }
+    }
+
     async function getUserConversations(req, res, next) {
         try {
             const userId = Number(req.params.userId || req.query.userId);
@@ -46,6 +60,7 @@ module.exports = function createConversationController({ conversationService, lo
     return {
         createDirectConversation,
         getUserConversations,
+        getConversation,
     };
 
 }

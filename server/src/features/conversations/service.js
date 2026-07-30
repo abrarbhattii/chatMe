@@ -1,4 +1,14 @@
+const NotFoundError = require("../../shared/errors/NotFoundError");
+
 module.exports = function createConversationService({ conversationRepository, logger, }) {
+
+    async function getConversation(conversationId) {
+        const conversation = await conversationRepository.findConversationById(conversationId);
+        if (!conversation) {
+            throw new NotFoundError("Conversation not found");
+        }
+        return conversation;
+    }
 
     async function getUserConversations(userId) {
         const conversations = await conversationRepository.findConversationsByUser(userId);
@@ -42,6 +52,7 @@ module.exports = function createConversationService({ conversationRepository, lo
     return {
         createDirectConversation,
         getUserConversations,
+        getConversation,
     };
 
 }
