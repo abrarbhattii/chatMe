@@ -14,7 +14,7 @@ afterAll(async () => {
     await application.stop();
 });
 
-describe("Chat API", () => {
+describe("Messages API http Tests", () => {
 
     test("Returns existing direct conversation", async () => {
         const response =
