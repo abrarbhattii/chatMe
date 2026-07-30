@@ -1,10 +1,10 @@
-module.exports = function createChatMessageHandler({ chatService, chatGateway, logger, }) {
+module.exports = function createChatMessageHandler({ messageService, chatMessageGateway, logger, }) {
 
     return async function handleChatMessage(socket, payloadValidatedMessageObject) {
         // console.log("payloadValidatedMessageObject: ", payloadValidatedMessageObject);
         // logger.info({ payloadValidatedMessageObject }, "payloadValidatedMessageObject: ");
-        // const message = await chatService.sendMessage(payloadValidatedMessageObject);
-        const message = await chatService.sendMessage({
+        // const message = await messageService.sendMessage(payloadValidatedMessageObject);
+        const message = await messageService.sendMessage({
             conversationId: payloadValidatedMessageObject.conversationId, 
             senderId: payloadValidatedMessageObject.senderId, 
             content: payloadValidatedMessageObject.content
@@ -14,7 +14,7 @@ module.exports = function createChatMessageHandler({ chatService, chatGateway, l
         //     type: "chat_message",
         //     payload: message,
         // }));
-        chatGateway.broadcast({ type: payloadValidatedMessageObject.type, payload: message, });
+        chatMessageGateway.broadcast({ type: payloadValidatedMessageObject.type, payload: message, });
     };
 
 };

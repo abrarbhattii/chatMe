@@ -1,6 +1,6 @@
 const { WebSocket } = require("ws");
 
-module.exports = function createChatGateway({ wss, logger, }) {
+module.exports = function createChatMessageGateway({ wss, logger, }) {
 
     function broadcast(event) {
         try {

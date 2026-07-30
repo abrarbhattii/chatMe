@@ -5,18 +5,18 @@ const createRoutes = require("./routes");
 
 const createChatMessageHandler = require("./websocket/handlers/chatMessageHandler");
 
-module.exports = function createChatModule({ pool, chatGateway, logger, }) {
+module.exports = function createMessagesModule({ pool, chatMessageGateway, logger, }) {
 
     const repository = createRepository({ pool, logger, });
 
-    const service = createService({ chatRepository: repository, chatGateway, logger, });
+    const service = createService({ messageRepository: repository, chatMessageGateway, logger, });
 
-    const controller = createController({ chatService: service, logger, });
+    const controller = createController({ messageService: service, logger, });
 
-    const httpRoutes = createRoutes({ chatController: controller });
+    const httpRoutes = createRoutes({ messageController: controller });
 
     const websocketHandlers = { 
-        chat_message: createChatMessageHandler({ chatService: service, chatGateway, logger, }) 
+        chat_message: createChatMessageHandler({messageService: service, chatMessageGateway, logger, }) 
     };
 
     return {

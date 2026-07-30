@@ -1,12 +1,12 @@
 const ValidationError = require("../../shared/errors/ValidationError");
 const NotFoundError = require("../../shared/errors/NotFoundError");
 
-module.exports = function createChatService({ chatRepository, chatGateway, logger, }) {
+module.exports = function createMessageService({ messageRepository, chatMessageGateway, logger, }) {
 
     async function sendMessage({ conversationId, senderId, content }) {
 
         try {
-            const exists = await chatRepository.exists(conversationId);
+            const exists = await messageRepository.exists(conversationId);
 
             if (!exists) {
                 throw new NotFoundError("Conversation not found.");
@@ -30,7 +30,7 @@ module.exports = function createChatService({ chatRepository, chatGateway, logge
 
             logger.debug({ senderId, conversationId, }, "Creating message");
 
-            const createdMessage = await chatRepository.create({ conversationId, senderId, content: content.trim(), });
+            const createdMessage = await messageRepository.createMessage({ conversationId, senderId, content: content.trim(), });
 
             logger.info({ messageId: createdMessage.id, conversationId, }, "Message created & stored");
 
@@ -43,13 +43,13 @@ module.exports = function createChatService({ chatRepository, chatGateway, logge
     }
 
     async function getMessages(conversationId) {
-        const exists = await chatRepository.exists(conversationId);
+        const exists = await messageRepository.exists(conversationId);
 
         if (!exists) {
             throw new NotFoundError("Conversation not found.");
         }
 
-        return chatRepository.getMessages(conversationId);
+        return messageRepository.getMessages(conversationId);
     }
 
     return {

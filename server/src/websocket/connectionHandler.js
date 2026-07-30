@@ -1,5 +1,5 @@
 const validate = require("../middleware/validate");
-const webSocketMessageSchema = require("../features/chat/schema/createWebSocketMessage");
+const webSocketMessageSchema = require("../features/messages/schema/createWebSocketMessage");
 
 
 module.exports = function createConnectionHandler({ messageRouter, logger, }) {
@@ -17,7 +17,7 @@ module.exports = function createConnectionHandler({ messageRouter, logger, }) {
                 // logger.info({validatedMessage}, "validatedMessage")
                 await messageRouter(socket, { ...validatedMessage, type: "chat_message"});
             } catch (err) {
-                logger.warn({ error: err.Message }, "Invalid WebSocket JSON");
+                logger.warn({ err }, "Invalid WebSocket JSON");
                 socket.send(JSON.stringify({
                     type: "error",
                     payload: {

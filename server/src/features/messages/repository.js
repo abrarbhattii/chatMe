@@ -1,5 +1,5 @@
 
-module.exports = function createChatRepository({ pool, logger, }) {
+module.exports = function createMessageRepository({ pool, logger, }) {
 
     async function exists(conversationId) {
 
@@ -19,7 +19,7 @@ module.exports = function createChatRepository({ pool, logger, }) {
 
     }
 
-    async function create({ conversationId, senderId, content }) {
+    async function createMessage({ conversationId, senderId, content }) {
 
         const query = `
             INSERT INTO messages(conversation_id, sender_id, content)
@@ -69,7 +69,7 @@ module.exports = function createChatRepository({ pool, logger, }) {
 
     return {
         exists,
-        create,
+        createMessage,
         getMessages,
     };
 };

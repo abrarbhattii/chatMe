@@ -6,10 +6,10 @@ const { WebSocketServer } = require("ws");
 
 
 const createDatabasePool = require("../config/postgres");
-const createChatGateway = require("../gateways/chatGateway");
+const createChatMessageGateway = require("../gateways/chatGateway");
 
 const createConversationModule = require("../features/conversations");
-const createChatModule = require("../features/chat");
+const createMessagesModule  = require("../features/messages");
 
 const createMessageRouter = require("../websocket/messageRouter");
 const createConnectionHandler = require("../websocket/connectionHandler");
@@ -51,21 +51,21 @@ module.exports = function createApplication() {
 
     const pool = createDatabasePool();
 
-    const chatGateway = createChatGateway({ wss, logger, });
+    const chatMessageGateway = createChatMessageGateway({ wss, logger, });
 
     const conversations = createConversationModule({ pool, logger, });
 
-    const chat = createChatModule({ pool, chatGateway, logger, });
+    const messages = createMessagesModule({ pool, chatMessageGateway, logger, });
 
     app.use("/api/v1/conversations", conversations.httpRoutes);
     
     app.use("/api/v1/health", healthRoutes);
 
-    app.use("/api/v1", chat.httpRoutes);
+    app.use("/api/v1", messages.httpRoutes);
 
     app.use(errorHandler);
 
-    const WS_handlers = { ...chat.websocketHandlers, };
+    const WS_handlers = { ...messages.websocketHandlers, };
 
     const router = createMessageRouter({ WS_handlers, logger, });
 
